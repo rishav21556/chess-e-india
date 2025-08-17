@@ -8,6 +8,7 @@ import { User } from './entities/users.entity';
 import { FriendRequest } from './entities/friend-request.entity';
 import { FriendList } from './entities/friend-list.entity';
 import { Game } from './entities/games.entity';
+import { FriendsModule } from './modules/friends/friends.module';
 @Module({
   imports: [
     // Load environment variables
@@ -34,6 +35,8 @@ import { Game } from './entities/games.entity';
     }),
     
     AuthModule,
+    
+    FriendsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
