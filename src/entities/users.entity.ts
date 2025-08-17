@@ -17,6 +17,9 @@ export class User {
     @Column()
     password: string;
 
+    @Column()
+    elo: number;
+
     @CreateDateColumn()
     createdAt: Date;
 
