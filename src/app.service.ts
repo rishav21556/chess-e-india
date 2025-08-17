@@ -1,10 +1,11 @@
 import { Injectable, Req, UseGuards } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { User } from './entities/users.entity';
 import { JwtAuthGuard } from './modules/auth/guard/auth.guard';
 import { FriendRequest } from './entities/friend-request.entity';
 import { FriendList } from './entities/friend-list.entity';
+import { Game } from './entities/games.entity';
 
 
 @Injectable()
@@ -16,6 +17,8 @@ export class AppService {
     private friendRequestRepository: Repository<FriendRequest>,
     @InjectRepository(FriendList)
     private friendListRepository: Repository<FriendList>,
+    @InjectRepository(Game)
+    private gameRepository: Repository<Game>,
   ){}
   async getDashboardData(@Req() req) {
     const req_user = req.user as User;
@@ -31,6 +34,15 @@ export class AppService {
       where: { user_id: req_user.id },
       relations: ['friend'],
     });
-    return { user, friendRequests, friendsList };
+    const games = await this.gameRepository.find({
+      where: [
+      { black_user_id: req_user.id },
+      { white_user_id: req_user.id }
+      ],
+      relations: ['whiteUser', 'blackUser'],
+      order: { createdAt: 'DESC' },
+      take: 5,
+    });
+    return { user, friendRequests, friendsList, games };
   }
 }

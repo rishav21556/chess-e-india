@@ -7,6 +7,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { User } from './entities/users.entity';
 import { FriendRequest } from './entities/friend-request.entity';
 import { FriendList } from './entities/friend-list.entity';
+import { Game } from './entities/games.entity';
 @Module({
   imports: [
     // Load environment variables
@@ -14,7 +15,7 @@ import { FriendList } from './entities/friend-list.entity';
       isGlobal: true,
       envFilePath: '.env',
     }),
-    TypeOrmModule.forFeature([User, FriendRequest, FriendList]),
+    TypeOrmModule.forFeature([User, FriendRequest, FriendList, Game]),
     // Configure TypeORM with PostgreSQL
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
