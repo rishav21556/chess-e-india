@@ -18,24 +18,23 @@ export class UsersService {
     @InjectRepository(Game)
     private gameRepository: Repository<Game>,
   ){}
-  async getDashboardData(@Req() req) {
-    const req_user = req.user as User;
+  async getDashboardData(req_user_id : string) {
     const user = await this.userRepository.findOne({ 
-      where: { id: req_user.id },
+      where: { id: req_user_id },
       select: ['user_name', 'email', 'isEmailVerified', 'elo']
     });
     const friendRequests = await this.friendRequestRepository.find({
-      where: { to_user_id: req_user.id },
+      where: { to_user_id: req_user_id },
       relations: ['sender'],
     });
     const friendsList = await this.friendListRepository.find({
-      where: { user_id: req_user.id },
+      where: { user_id: req_user_id },
       relations: ['friend'],
     });
     const games = await this.gameRepository.find({
       where: [
-      { black_user_id: req_user.id },
-      { white_user_id: req_user.id }
+      { black_user_id: req_user_id },
+      { white_user_id: req_user_id }
       ],
       relations: ['whiteUser', 'blackUser'],
       order: { createdAt: 'DESC' },
@@ -47,7 +46,7 @@ export class UsersService {
   async searchUserName(partialUserName?: string) {
     const user_names = await this.userRepository.find({
       where: { user_name: Like(`%${partialUserName}%`) },
-      select: ['user_name','elo','email'],
+      select: ['id', 'user_name', 'elo', 'email'],
     });
     return user_names;
   }

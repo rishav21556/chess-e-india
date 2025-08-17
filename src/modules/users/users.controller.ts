@@ -7,8 +7,8 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
   @Get()
   @UseGuards(JwtAuthGuard)
-  async getDashboardData(@Req() req): Promise<any> {
-    const data = await this.usersService.getDashboardData(req);
+  async getDashboardData(@Req() req, @Query('user_id') userId?: string): Promise<any> {
+    const data = await this.usersService.getDashboardData(userId ? userId : req.user.id);
     return data;
   }
   @Get('search')
