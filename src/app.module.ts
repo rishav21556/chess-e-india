@@ -9,6 +9,7 @@ import { FriendRequest } from './entities/friend-request.entity';
 import { FriendList } from './entities/friend-list.entity';
 import { Game } from './entities/games.entity';
 import { FriendsModule } from './modules/friends/friends.module';
+import { UsersModule } from './modules/users/users.module';
 @Module({
   imports: [
     // Load environment variables
@@ -16,7 +17,6 @@ import { FriendsModule } from './modules/friends/friends.module';
       isGlobal: true,
       envFilePath: '.env',
     }),
-    TypeOrmModule.forFeature([User, FriendRequest, FriendList, Game]),
     // Configure TypeORM with PostgreSQL
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -37,6 +37,8 @@ import { FriendsModule } from './modules/friends/friends.module';
     AuthModule,
     
     FriendsModule,
+    
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
