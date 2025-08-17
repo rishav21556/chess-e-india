@@ -1,5 +1,4 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, Index, ManyToOne, JoinColumn } from 'typeorm';
-import { Timestamp } from 'typeorm/browser';
 import { User } from './users.entity';
 
 enum GameResult {
