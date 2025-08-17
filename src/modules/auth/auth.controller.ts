@@ -25,7 +25,7 @@ export class AuthController {
       res.cookie('token', result.token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        sameSite: 'none',
+        sameSite: 'lax',
         maxAge: parseInt(String(jwtConfig.signOptions?.expiresIn) || '1') * 60 * 60 * 1000
       });
     }
