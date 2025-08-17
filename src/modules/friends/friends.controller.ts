@@ -1,34 +1,45 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UseGuards } from '@nestjs/common';
 import { FriendsService } from './friends.service';
 import { CreateFriendDto } from './dto/create-friend.dto';
 import { UpdateFriendDto } from './dto/update-friend.dto';
+import { JwtAuthGuard } from '../auth/guard/auth.guard';
+import { User } from 'src/entities/users.entity';
 
 @Controller('friends')
 export class FriendsController {
   constructor(private readonly friendsService: FriendsService) {}
 
-  @Post()
-  create(@Body() createFriendDto: CreateFriendDto) {
-    return this.friendsService.create(createFriendDto);
+  @UseGuards(JwtAuthGuard)
+  @Get('requests')
+  async GetAllFriendRequest(){
+    return await this.friendsService.GetAllFriendRequest();
   }
 
-  @Get()
-  findAll() {
-    return this.friendsService.findAll();
+  @UseGuards(JwtAuthGuard)
+  @Get('list')
+  async GetAllFriends(){
+    return await this.friendsService.GetAllFriends();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.friendsService.findOne(+id);
+  @UseGuards(JwtAuthGuard)
+  @Post('send-request/:req_friend_user')
+  async SendFriendRequest(@Param('req_friend_user') req_friend_user: string, @Req() req){
+    const userId = req.user.id;
+    return await this.friendsService.SendFriendRequest(userId, req_friend_user);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateFriendDto: UpdateFriendDto) {
-    return this.friendsService.update(+id, updateFriendDto);
+  @UseGuards(JwtAuthGuard)
+  @Post('accept-request/:requestId')
+  async AcceptFriendRequest(@Param('requestId') requestId: string, @Req() req){
+    const userId = req.user.id;
+    return await this.friendsService.AcceptFriendRequest(userId, requestId);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.friendsService.remove(+id);
+  @UseGuards(JwtAuthGuard)
+  @Post('reject-request/:requestId')
+  async RejectFriendRequest(@Param('requestId') requestId: string, @Req() req){
+    const userId = req.user.id;
+    return await this.friendsService.RejectFriendRequest(userId, requestId);
   }
+
 }
