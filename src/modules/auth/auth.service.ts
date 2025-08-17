@@ -48,12 +48,9 @@ export class AuthService {
     if (!isPasswordValid) {
       throw new UnauthorizedException('Invalid Username or Password');
     }
-    console.log(`isPasswordValid: ${isPasswordValid}`);
     // Generate a JWT token
     const payload = { sub: user.id, username: user.user_name };
-    console.log(`Payload for JWT: ${JSON.stringify(payload)}`);
     const token = await this.jwtService.signAsync(payload);
-    console.log(`Generated token: ${token}`);
 
     let res = {
       user_name: user.user_name,

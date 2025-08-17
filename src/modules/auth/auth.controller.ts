@@ -21,13 +21,11 @@ export class AuthController {
   async login(@Body() loginDto: { user_name: string; password: string }, @Res({ passthrough: true }) res) {
     const result = await this.authService.login(loginDto.user_name, loginDto.password);
     if (result && result.token) {
-      console.log('Setting cookie with token:', result.token);
-      
       // Set cookie with proper configuration
       res.cookie('token', result.token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
+        sameSite: 'none',
         maxAge: parseInt(String(jwtConfig.signOptions?.expiresIn) || '1') * 60 * 60 * 1000
       });
     }
@@ -37,14 +35,6 @@ export class AuthController {
   @Post('/verify')
   @UseGuards(JwtAuthGuard)
   async verify(@Req() req) {
-    const token = req.cookies?.token || req.headers.authorization?.split(' ')[1];
-    if (!token) {
-      throw new UnauthorizedException('No token found');
-    }
-    // Verify the token
-    const payload = await this.jwtService.verifyAsync(token, {
-      secret: jwtConfig.secret
-    });
-    return payload; 
+    return req.user;
   }
 }
