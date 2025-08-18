@@ -10,6 +10,7 @@ import { FriendList } from './entities/friend-list.entity';
 import { Game } from './entities/games.entity';
 import { FriendsModule } from './modules/friends/friends.module';
 import { UsersModule } from './modules/users/users.module';
+import { ChallengesModule } from './modules/challenges/challenges.module';
 @Module({
   imports: [
     // Load environment variables
@@ -39,6 +40,8 @@ import { UsersModule } from './modules/users/users.module';
     FriendsModule,
     
     UsersModule,
+    
+    ChallengesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
