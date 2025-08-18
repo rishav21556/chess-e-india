@@ -3,7 +3,7 @@ import { User } from './users.entity';
 import { Game } from './games.entity';
 
 export enum ChallengeStatus{
-    CREATED = 'created',
+    PENDING = 'pending',
     ACCEPTED = 'accepted',
     REJECTED = 'rejected',
     CANCELLED = 'cancelled'
@@ -23,7 +23,7 @@ export class Challenge {
   @Column({nullable: true})
   game_id: string;
 
-  @Column({type: 'enum', enum: ChallengeStatus, default: ChallengeStatus.CREATED})
+  @Column({type: 'enum', enum: ChallengeStatus, default: ChallengeStatus.PENDING})
   status: ChallengeStatus;
 
   @CreateDateColumn()

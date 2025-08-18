@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadGatewayException, BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateChallengeDto } from './dto/create-challenge.dto';
 import { UpdateChallengeDto } from './dto/update-challenge.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -30,10 +30,20 @@ export class ChallengesService {
   }
 
   async update(id: number, updateChallengeDto: Challenge) {
-    const existingChallenge = await this.challengesRepository.findOne({where: {id: id.toString()}});
-    if (existingChallenge) {
-      return this.challengesRepository.update(id, updateChallengeDto);
-    }
+    return this.challengesRepository.manager.transaction(async (manager) => {
+      const existingChallenge = await manager.findOne(Challenge, {where: {id: id.toString()}});
+      if (!existingChallenge){throw new NotFoundException('Challenge not found');}
+      if (existingChallenge.status == ChallengeStatus.CANCELLED){
+        throw new BadRequestException('Cannot update a cancelled challenge');
+        }
+      if (existingChallenge.status == ChallengeStatus.REJECTED || existingChallenge.status == ChallengeStatus.ACCEPTED) {
+        throw new BadRequestException('Cannot update a rejected or accepted challenge');
+        }
+      if (existingChallenge.status !== ChallengeStatus.PENDING) {
+        throw new BadRequestException('Cannot update a non-pending challenge');
+        }
+      return manager.update(Challenge, id, updateChallengeDto);
+    });
   }
 
   remove(id: number) {
